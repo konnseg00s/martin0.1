@@ -118,6 +118,22 @@ mark{background:#ff9f0a55;color:inherit;border-radius:3px;padding:0 1px}
 .fb button{min-width:136px;padding:14px;border:0;border-radius:26px;font-size:16px;background:var(--card);color:var(--tx)}
 .fb .pr{background:var(--or);color:#000;font-weight:600}
 @media(max-width:340px){nav button{font-size:9px;letter-spacing:-.3px}}
+
+.tb{display:flex;gap:4px;overflow-x:auto;padding:4px 0 8px;position:sticky;top:0;background:#161618;z-index:2}
+.tbb{flex:none;min-width:36px;height:38px;border:0;border-radius:10px;background:#2c2c2e;color:var(--tx);font-size:15px;padding:0 7px}
+.tbb.on{background:var(--or);color:#000}
+.hlr{display:flex;gap:10px;padding:2px 2px 10px}.hlc{width:32px;height:32px;border-radius:50%;border:0;color:var(--tx);font-size:14px}.hlc.no{background:#2c2c2e}
+.lkr{display:flex;gap:6px;padding-bottom:8px}.lkr input{flex:1;min-width:0}
+.rt{background:#2c2c2e;border-radius:10px;padding:11px;min-height:110px;font-size:16px;line-height:1.4;outline:none;overflow-wrap:anywhere;-webkit-user-select:text;user-select:text}
+.rt:empty:before{content:attr(data-ph);color:#636366}
+.rt a{color:#64d2ff;text-decoration:underline}
+.rt img{display:block;max-width:100%;max-height:240px;object-fit:contain;border-radius:8px;margin:6px 0;background:#1c1c1e}
+.rt ul,.rt ol{margin:4px 0;padding-left:24px}
+.rt [style*="rgb"]{color:#111;border-radius:3px;padding:0 2px}
+#lb{position:fixed;inset:0;background:#000f;z-index:30;display:none;flex-direction:column}
+#lb.show{display:flex}
+#lb .lbt{display:flex;justify-content:space-between;padding:calc(12px + env(safe-area-inset-top,0px)) 14px 10px}
+#lb img{flex:1;min-height:0;width:100%;object-fit:contain;touch-action:pinch-zoom}
 </style>
 </head>
 <body>
@@ -128,6 +144,7 @@ mark{background:#ff9f0a55;color:inherit;border-radius:3px;padding:0 1px}
 </div>
 <button class="fab" id="fab" onclick="openForm()">+</button>
 <div id="m"><div class="sheet" id="sheet"></div></div>
+<div id="lb"><div class="lbt"><button class="hb" onclick="lbDel()">🗑 Видалити</button><button class="hb" onclick="lbClose()">✕ Закрити</button></div><img id="lb_i" alt=""></div>
 <div id="sr"><div class="in"><div class="sbar"><input id="sq" type="search" placeholder="Пошук завдань" autocomplete="off" enterkeyhint="search" oninput="srRes()"><button class="hb" onclick="srClose()">Закрити</button></div><div class="sfr"><button class="fbt" id="sfb" onclick="srFo()"></button><span id="sfx" style="margin-left:auto"></span></div><div id="sr_f"></div><div id="sr_res"></div></div></div>
 <div id="cp"><div id="cps"><b style="font-size:18px">Вибір кольору</b><div class="cprow"><div id="cp_sw"></div><div id="cp_sv"><div id="cp_cur"></div></div></div><div id="cp_hue"><div id="cp_th"></div></div><div class="row2" style="margin-top:14px"><input id="cp_hex" maxlength="7" style="font-family:monospace" oninput="cpHex(this.value)"></div><div class="btns"><button onclick="cpClose()">Скасувати</button><button class="pr" onclick="cpOk()">Готово</button></div></div></div>
 <script>
@@ -163,7 +180,7 @@ for(const raw of src){const x=raw.replace(/\s+/g,' '),lx=x.toLowerCase();let at=
 if(at>=0){const a=Math.max(0,at-30),b=Math.min(x.length,at+70);return `<div class="snp">${a?'…':''}${hl(x.slice(a,b),w)}${b<x.length?'…':''}</div>`}}return ''}
 const indR=t=>t.ind?(t.ind.c?`<div class="pt ind"><span class="pill" style="--c:${t.ind.c}">${esc(t.ind.l)}</span></div>`:`<div class="pt ind">${esc(t.ind.l)}</div>`):'';
 function row(t,w){w=Array.isArray(w)&&w.length?w:null;const sb=S.subjects.find(s=>s.id===t.subj),od=!t.done&&t.date<today();
-return `<div class="r ${t.done?'dn':''}"><div class="cb ${t.done?'on':''}" onclick="tog('${t.id}')"></div><div class="rm" onclick="openDetail('${t.id}')"><div class="tt">${hl(t.title,w)}</div><div class="sub">${sb?`<span style="color:${sb.color}">${esc(sb.name)}</span> · `:''}${t.hours||0} год${cntH(t)}${t.desc?'<span class="di">📝</span>':''}</div>${snip(t,w)}<div class="pl">${['type','diff'].map(k=>t[k]?`<span class="pill" style="--c:${t[k].c}">${esc(t[k].l)}</span>`:'').join('')}</div></div><div class="dt ${od?'od':''}">${fd(t.date)}${t.pts!=null&&t.pts!==''?`<div class="pt">${t.pts} б.</div>`:''}${indR(t)}</div></div>`}
+return `<div class="r ${t.done?'dn':''}"><div class="cb ${t.done?'on':''}" onclick="tog('${t.id}')"></div><div class="rm" onclick="openDetail('${t.id}')"><div class="tt">${hl(t.title,w)}</div><div class="sub">${sb?`<span style="color:${sb.color}">${esc(sb.name)}</span> · `:''}${t.hours||0} год${cntH(t)}${t.desc||t.descH?'<span class="di">📝</span>':''}</div>${snip(t,w)}<div class="pl">${['type','diff'].map(k=>t[k]?`<span class="pill" style="--c:${t[k].c}">${esc(t[k].l)}</span>`:'').join('')}</div></div><div class="dt ${od?'od':''}">${fd(t.date)}${t.pts!=null&&t.pts!==''?`<div class="pt">${t.pts} б.</div>`:''}${indR(t)}</div></div>`}
 const open=()=>S.tasks.filter(t=>!t.done).sort((a,b)=>a.date.localeCompare(b.date));
 const heavy=t=>t.diff&&/важк|реферат|диплом/i.test(t.diff.l);
 
@@ -221,8 +238,9 @@ function saveSubj(){const n=$('#es_n').value.trim();if(!n){alert('Вкажи н�
 
 function addSubj(){const n=$('#ns').value.trim();if(!n)return;S.subjects.push({id:'s'+Date.now(),name:n,color:$('#nc').dataset.v});save();window._keep=0;render()}
 function delSubj(id){if(!confirm('Видалити предмет? Завдання залишаться без предмета.'))return false;S.subjects=S.subjects.filter(s=>s.id!==id);save();render();return true}
-function exportData(){const b=new Blob([JSON.stringify(S)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='martin-backup-'+today()+'.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000)}
-function importData(inp){const f=inp.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(!Array.isArray(d.tasks)||!Array.isArray(d.subjects)||!d.presets)throw 0;if(!confirm('Замінити поточні дані копією? ('+d.tasks.length+' завдань)')){inp.value='';return}S=d;if(!S.caps)S.caps=Array(7).fill(S.cap||2);if(!S.presets.ind)S.presets.ind=[];if(!S.names)S.names={};save();render()}catch(e){alert('Не вдалося прочитати файл копії')}inp.value=''};r.readAsText(f)}
+async function exportData(){const ids=new Set();S.tasks.forEach(t=>(t.descH||'').replace(/data-i="([^"]+)"/g,(m,i)=>ids.add(i)));const imgs={};for(const i of ids){const v=await IM.get(i);if(v)imgs[i]=v.d}
+const b=new Blob([JSON.stringify({...S,_imgs:imgs})],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='martin-backup-'+today()+'.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000)}
+function importData(inp){const f=inp.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(!Array.isArray(d.tasks)||!Array.isArray(d.subjects)||!d.presets)throw 0;if(!confirm('Замінити поточні дані копією? ('+d.tasks.length+' завдань)')){inp.value='';return}const im=d._imgs||{};delete d._imgs;Object.entries(im).forEach(([k,v])=>IM.put(k,{d:v,t:Date.now()}));S=d;if(!S.caps)S.caps=Array(7).fill(S.cap||2);if(!S.presets.ind)S.presets.ind=[];if(!S.names)S.names={};save();render()}catch(e){alert('Не вдалося прочитати файл копії')}inp.value=''};r.readAsText(f)}
 function go(v){view=v;window._keep=0;render()}
 function tog(id){const t=S.tasks.find(t=>t.id===id);t.done=!t.done;t.doneAt=t.done?Date.now():null;save();window._keep=1;render();window._keep=0}
 
@@ -354,7 +372,7 @@ if(k!=='ind')return `<div class="cu ${v?'show':''}" id="cu_${k}">${ib}</div>`;
 return `<div class="cu col ${v?'show':''}" id="cu_ind"><div class="row2">${ib}</div><label class="ck"><input type="checkbox" id="ck_ind" ${nc?'':'checked'} onchange="cuIn('ind')">З кольором</label></div>`}
 function openForm(id){
 const t=id&&S.tasks.find(t=>t.id===id);
-F={id:id||null,sel:{},cu:{},orig:{},items:t&&t.items?t.items.map(x=>({...x})):[]};
+rtFlush();F={id:id||null,sel:{},cu:{},orig:{},items:t&&t.items?t.items.map(x=>({...x})):[]};
 Object.keys(KINDS).forEach(k=>{F.sel[k]=t&&t[k]?{...t[k]}:null;F.orig[k]=F.sel[k]?{...F.sel[k]}:null;F.cu[k]=!!(F.sel[k]&&!S.presets[k].some(p=>same(p,F.sel[k])))});
 const dflt=view==='cal'?selDay:today();
 $('#sheet').innerHTML=`<b style="font-size:20px">${t?'Редагувати':'Нове завдання'}</b>
@@ -364,10 +382,10 @@ $('#sheet').innerHTML=`<b style="font-size:20px">${t?'Редагувати':'Н�
 <label>Скільки годин потрібно (сумарно)</label><input type="number" id="f_h" min="0" step="0.5" value="${t?t.hours:''}" placeholder="Напр. 3">
 <label>Бали за завдання (необов'язково)</label><input type="number" id="f_p" min="0" step="0.5" value="${t&&t.pts!=null?t.pts:''}" placeholder="Напр. 10">
 ${Object.entries(KINDS).map(([k,n])=>`<label>${kn(k)}</label><div class="chips" id="ch_${k}"></div>${cuBox(k)}`).join('')}
-${t?'':`<label>Опис (необов'язково)</label><textarea id="f_ds" rows="3" placeholder="Що саме треба зробити, посилання, нотатки…"></textarea>`}
+${t?'':`<label>Опис (необов'язково)</label>${rtBox('')}`}
 <label>Пункти (необов'язково)</label><div id="f_it"></div><button type="button" class="addit" onclick="itAdd()">＋ Додати пункт</button>
 <div class="btns">${t?'<button class="dl" onclick="del()">Видалити</button>':''}<button onclick="cancelF()">Скасувати</button><button class="pr" onclick="saveF()">Зберегти</button></div>`;
-Object.keys(KINDS).forEach(k=>chips(k));indUI();itDraw();
+Object.keys(KINDS).forEach(k=>chips(k));indUI();itDraw();if(!t)rtInit();
 $('#sheet').scrollTop=0;$('#m').classList.add('show')}
 function chips(k){$('#ch_'+k).innerHTML=S.presets[k].map((p,i)=>`<span class="chip ${!F.cu[k]&&same(F.sel[k],p)?'on':''}" style="--c:${p.c||'#e5e5ea'}" onclick="pick('${k}',${i})">${esc(p.l)}${k!=='type'&&DEF.presets[k].some(d=>same(d,p))?'':`<b class="cx" onclick="event.stopPropagation();delPreset('${k}',${i})">×</b>`}</span>`).join('')+`<span class="chip ${F.cu[k]?'on':''}" onclick="cust('${k}')">＋ Своє</span>`}
 function delPreset(k,i){const p=S.presets[k][i];if(!confirm('Видалити індикатор «'+p.l+'»? У вже створених завданнях він залишиться.'))return;S.presets[k].splice(i,1);if(same(F.sel[k],p)){F.sel[k]=null;F.cu[k]=false;$('#cu_'+k).classList.remove('show')}save();chips(k)}
@@ -375,7 +393,7 @@ function pick(k,i){const p=S.presets[k][i];F.sel[k]=!F.cu[k]&&same(F.sel[k],p)?n
 function cust(k){F.cu[k]=!F.cu[k];$('#cu_'+k).classList.toggle('show',F.cu[k]);if(F.cu[k])cuIn(k);else F.sel[k]=null;chips(k)}
 function cuIn(k){const l=$('#ct_'+k).value.trim();let c=$('#cc_'+k).dataset.v;if(k==='ind'){indUI();if(!$('#ck_ind').checked)c=null}F.sel[k]=l?{l,c}:null}
 function indUI(){const b=$('#ck_ind');if(b)$('#cc_ind').style.display=b.checked?'':'none'}
-function closeF(){$('#m').classList.remove('show')}
+function closeF(){rtFlush();$('#m').classList.remove('show')}
 function cancelF(){if(F&&F.id)openDetail(F.id);else closeF()}
 function subjSel(){$('#cu_s').classList.toggle('show',$('#f_s').value==='__new')}
 function saveF(){
@@ -384,7 +402,7 @@ if(!title||!date){alert('Вкажи назву і дедлайн');return}
 Object.keys(KINDS).forEach(k=>{if(F.cu[k]&&F.sel[k]&&!same(F.sel[k],F.orig[k])&&!S.presets[k].some(p=>p.l===F.sel[k].l))S.presets[k].push({...F.sel[k]})});
 let sid=$('#f_s').value;if(sid==='__new'){const n=$('#ns2').value.trim();if(!n){alert('Вкажи назву нового предмета');return}const ex=S.subjects.find(s=>s.name.toLowerCase()===n.toLowerCase());if(ex)sid=ex.id;else{sid='s'+Date.now();S.subjects.push({id:sid,name:n,color:$('#nc2').dataset.v})}}
 const d={title,date,subj:sid,hours:parseFloat($('#f_h').value)||0,type:F.sel.type,diff:F.sel.diff,ind:F.sel.ind,items:F.items.map(x=>({t:x.t.trim(),d:!!x.d})).filter(x=>x.t),pts:$('#f_p').value===''?null:parseFloat($('#f_p').value)};
-if(F.id)Object.assign(S.tasks.find(t=>t.id===F.id),d);else S.tasks.push({id:'t'+Date.now(),done:false,desc:$('#f_ds').value.trim(),...d});
+if(F.id)Object.assign(S.tasks.find(t=>t.id===F.id),d);else S.tasks.push({id:'t'+Date.now(),done:false,...rtVals(),...d});
 save();if(F.id){const id=F.id;window._keep=1;render();window._keep=0;openDetail(id)}else{closeF();render()}}
 function del(){if(!confirm('Видалити завдання?'))return;S.tasks=S.tasks.filter(t=>t.id!==F.id);save();closeF();window._keep=1;render();window._keep=0}
 /* details */
@@ -397,11 +415,93 @@ const sb=S.subjects.find(s=>s.id===t.subj),od=!t.done&&t.date<today();
 const ks=Object.entries(KINDS).filter(([k])=>t[k]).map(([k])=>kv(kn(k),indH(t[k]))).join('');
 $('#sheet').innerHTML=`<b class="dtl">${esc(t.title)}</b>
 <div class="card" style="margin:14px 0 4px">${sb?kv('Предмет',`<span style="color:${sb.color}">${esc(sb.name)}</span>`):''}${kv('Дедлайн',`<span style="color:${od?'#ff453a':'var(--or)'}">${fdl(t.date)}</span>`)}${kv('Години',(t.hours||0)+' год')}${t.pts!=null&&t.pts!==''?kv('Бали',t.pts):''}${ks}${t.done?kv('Статус','Виконано ✓'):''}</div>${itsH(t)}
-<label>Опис</label><textarea id="d_ds" placeholder="Додай опис завдання…" oninput="descIn('${id}',this)">${esc(t.desc||'')}</textarea>
+<label>Опис</label>${rtBox(descToHtml(t))}
 <div class="btns"><button onclick="closeF()">Закрити</button><button class="pr" onclick="openForm('${id}')">Редагувати</button></div>`;
-$('#sheet').scrollTop=0;$('#m').classList.add('show');autoH($('#d_ds'))}
-function descIn(id,el){const t=S.tasks.find(x=>x.id===id);if(t){t.desc=el.value;save()}autoH(el)}
-function autoH(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight+2,innerHeight*.4)+'px'}
+$('#sheet').scrollTop=0;$('#m').classList.add('show');rtInit(id)}
+/* rich description */
+const IM={c:new Map(),p:null,
+open(){return this.p||(this.p=new Promise((res,rej)=>{const r=indexedDB.open('martin_img',1);r.onupgradeneeded=()=>r.result.createObjectStore('i');r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)}))},
+async tx(m,f){const db=await this.open();return new Promise((res,rej)=>{const t=db.transaction('i',m),r=f(t.objectStore('i'));t.oncomplete=()=>res(r&&r.result);t.onerror=()=>rej(t.error);t.onabort=()=>rej(t.error)})},
+async get(id){if(this.c.has(id))return this.c.get(id);try{const v=await this.tx('readonly',s=>s.get(id));if(v)this.c.set(id,v);return v}catch(e){}},
+async put(id,v){await this.tx('readwrite',s=>s.put(v,id));this.c.set(id,v)},
+async del(id){this.c.delete(id);try{await this.tx('readwrite',s=>s.delete(id))}catch(e){}},
+async keys(){try{return(await this.tx('readonly',s=>s.getAllKeys()))||[]}catch(e){return[]}}};
+async function gcImgs(){try{const used=new Set();S.tasks.forEach(t=>(t.descH||'').replace(/data-i="([^"]+)"/g,(m,i)=>used.add(i)));
+for(const k of await IM.keys()){if(used.has(k))continue;const v=await IM.get(k);if(v&&Date.now()-(v.t||0)>3*864e5)await IM.del(k)}}catch(e){}}
+const PAL=['#ffd60a','#ff9f0a','#30d158','#64d2ff','#ff6482'];
+const hexOf=v=>{v=(v||'').trim().toLowerCase();let m=v.match(/^#([0-9a-f]{6})$/);if(m)return '#'+m[1];m=v.match(/^rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/);return m?'#'+[m[1],m[2],m[3]].map(x=>(+x).toString(16).padStart(2,'0')).join(''):''};
+const TAGS={B:1,STRONG:1,I:1,EM:1,U:1,S:1,STRIKE:1,DEL:1,BR:1,DIV:1,P:1,UL:1,OL:1,LI:1,A:1,IMG:1,SPAN:1};
+const DROP={SCRIPT:1,STYLE:1,IFRAME:1,OBJECT:1,EMBED:1,NOSCRIPT:1,TEMPLATE:1,HEAD:1,TITLE:1,META:1,LINK:1,SVG:1,CANVAS:1,TEXTAREA:1,SELECT:1,BUTTON:1,INPUT:1};
+function clean(html){
+const src=new DOMParser().parseFromString('<body>'+String(html||'')+'</body>','text/html').body,out=document.createElement('div');
+(function walk(s,d){s.childNodes.forEach(n=>{
+if(n.nodeType===3){d.appendChild(document.createTextNode(n.nodeValue));return}
+if(n.nodeType!==1)return;const g=n.tagName;
+if(DROP[g])return;
+if(!TAGS[g]){walk(n,d);return}
+if(g==='IMG'){const i=n.getAttribute('data-i');if(i&&/^[\w-]+$/.test(i)){const e=document.createElement('img');e.setAttribute('data-i',i);d.appendChild(e)}return}
+const bg=hexOf(n.style.backgroundColor),hasBg=PAL.includes(bg);
+if(g==='SPAN'){if(hasBg){const e=document.createElement('span');e.style.backgroundColor=bg;walk(n,e);d.appendChild(e)}else walk(n,d);return}
+if(g==='A'){const h=n.getAttribute('href')||'';if(/^(https?:|mailto:|tel:)/i.test(h)){const e=document.createElement('a');e.setAttribute('href',h);if(hasBg)e.style.backgroundColor=bg;walk(n,e);d.appendChild(e)}else walk(n,d);return}
+const e=document.createElement(g==='STRONG'?'B':g==='EM'?'I':g==='STRIKE'||g==='DEL'?'S':g);if(hasBg&&g!=='BR')e.style.backgroundColor=bg;walk(n,e);d.appendChild(e)})})(src,out);
+return !out.textContent.trim()&&!out.querySelector('img')?'':out.innerHTML}
+function linkify(el){const re=/((?:https?:\/\/|www\.)[^\s<>"']*[^\s<>"'.,;:!?)\]»])/gi;
+const w=document.createTreeWalker(el,NodeFilter.SHOW_TEXT),L=[];let n;
+while(n=w.nextNode())if(!n.parentElement.closest('a')&&/(https?:\/\/|www\.)/i.test(n.nodeValue))L.push(n);
+L.forEach(n=>{const t=n.nodeValue,f=document.createDocumentFragment();let i=0,m;re.lastIndex=0;
+while(m=re.exec(t)){if(m.index>i)f.appendChild(document.createTextNode(t.slice(i,m.index)));const a=document.createElement('a');a.setAttribute('href',/^www\./i.test(m[1])?'https://'+m[1]:m[1]);a.textContent=m[1];f.appendChild(a);i=m.index+m[1].length}
+if(i<t.length)f.appendChild(document.createTextNode(t.slice(i)));n.replaceWith(f)})}
+const descToHtml=t=>t.descH!=null?t.descH:(t.desc?esc(t.desc).replace(/\r?\n/g,'<br>'):'');
+const RT={ed:null,range:null,id:null,t:null,lkA:null};
+function rtBox(html){
+const B=(c,l)=>`<button type="button" class="tbb" ${c?`data-c="${c}"`:''} onmousedown="event.preventDefault()"`;
+return `<div class="tb" id="rt_tb">${[['bold','<b>B</b>'],['italic','<i>I</i>'],['underline','<u>U</u>'],['strikeThrough','<s>S</s>']].map(([c,l])=>`${B(c)} onclick="rtCmd('${c}')">${l}</button>`).join('')}${B()} onclick="rtHlT()">🖍</button>${B('insertUnorderedList')} onclick="rtCmd('insertUnorderedList')">•</button>${B('insertOrderedList')} onclick="rtCmd('insertOrderedList')">1.</button>${B()} onclick="rtLink()">🔗</button>${B()} onclick="$('#rt_fi').click()">🖼</button></div>
+<div id="rt_hl" class="hlr" style="display:none">${PAL.map(c=>`<button type="button" class="hlc" style="background:${c}" onmousedown="event.preventDefault()" onclick="rtHl('${c}')"></button>`).join('')}<button type="button" class="hlc no" onmousedown="event.preventDefault()" onclick="rtHl('')">✕</button></div>
+<div id="rt_lk" class="lkr" style="display:none"><input id="rt_li" type="url" placeholder="https://…" autocapitalize="off"><button type="button" class="tbb" onclick="rtLinkOk()">OK</button><button type="button" class="tbb" onclick="rtUnlink()">✕</button></div>
+<div id="rt_ed" class="rt" contenteditable="true" data-ph="Додай опис, посилання, фото…" oninput="rtIn()" onblur="rtBlur(event)" onclick="rtClick(event)" onpaste="rtPaste(event)">${clean(html)}</div><input type="file" id="rt_fi" accept="image/*" multiple hidden onchange="rtFiles(this)">`}
+function rtInit(id){RT.ed=$('#rt_ed');RT.id=id||null;RT.range=null;clearTimeout(RT.t);RT.t=null;if(!RT.ed)return;linkify(RT.ed);rtHydrate(RT.ed)}
+function rtHydrate(root){root.querySelectorAll('img[data-i]').forEach(async im=>{if(im.getAttribute('src'))return;const v=await IM.get(im.dataset.i);if(v)im.src=v.d;else im.alt='зображення не знайдено'})}
+function rtVals(){const e=$('#rt_ed');if(!e)return{desc:''};linkify(e);return{desc:e.innerText.trim(),descH:clean(e.innerHTML)}}
+function rtIn(){const e=RT.ed;if(!e)return;if(e.innerHTML==='<br>')e.innerHTML='';if(RT.id){clearTimeout(RT.t);RT.t=setTimeout(rtCommit,500)}}
+function rtCommit(){clearTimeout(RT.t);RT.t=null;const t=RT.id&&S.tasks.find(x=>x.id===RT.id);if(!t||!RT.ed)return;
+t.descH=clean(RT.ed.innerHTML);t.desc=RT.ed.innerText.trim();save();window._keep=1;render();window._keep=0}
+function rtFlush(){if(RT.t)rtCommit()}
+function rtBlur(ev){const r=ev&&ev.relatedTarget;if(r&&r.closest&&r.closest('#rt_tb,#rt_hl,#rt_lk'))return;if(RT.ed)linkify(RT.ed);if(RT.id)rtCommit()}
+function rtRestore(){const e=RT.ed;if(!RT.range){const r=document.createRange();r.selectNodeContents(e);r.collapse(false);RT.range=r}const s=getSelection();s.removeAllRanges();s.addRange(RT.range)}
+function rtState(){document.querySelectorAll('#rt_tb [data-c]').forEach(b=>{let on=false;try{on=document.queryCommandState(b.dataset.c)}catch(e){}b.classList.toggle('on',on)})}
+function rtFix(){RT.ed.querySelectorAll('span[style]').forEach(sp=>{const b=sp.style.backgroundColor;if(!b||b==='transparent'||/,\s*0\)$/.test(b)){sp.style.backgroundColor='';if(!sp.getAttribute('style'))sp.replaceWith(...sp.childNodes)}})}
+function rtCmd(c,v){const e=RT.ed;if(!e)return;e.focus();rtRestore();document.execCommand(c,false,v||null);rtFix();rtIn();rtState()}
+function rtHlT(){const h=$('#rt_hl');h.style.display=h.style.display==='none'?'flex':'none';$('#rt_lk').style.display='none'}
+function rtHl(c){rtCmd('hiliteColor',c||'transparent')}
+function rtLink(){const e=RT.ed;if(!e)return;let a=null;if(RT.range){const n=RT.range.startContainer;a=(n.nodeType===3?n.parentElement:n).closest('a')}
+RT.lkA=a&&e.contains(a)?a:null;$('#rt_hl').style.display='none';$('#rt_lk').style.display='flex';$('#rt_li').value=RT.lkA?RT.lkA.getAttribute('href'):'';$('#rt_li').focus()}
+function rtLinkOk(){let u=$('#rt_li').value.trim();if(!u)return;if(!/^[a-z][a-z0-9+.-]*:/i.test(u))u='https://'+u;
+if(!/^(https?:|mailto:|tel:)/i.test(u)){alert('Підтримуються лише http(s), mailto і tel');return}
+$('#rt_lk').style.display='none';const e=RT.ed;
+if(RT.lkA){RT.lkA.setAttribute('href',u);rtIn();return}
+e.focus();rtRestore();const sel=getSelection();
+if(sel.rangeCount&&!sel.isCollapsed)document.execCommand('createLink',false,u);else document.execCommand('insertHTML',false,`<a href="${esc(u)}">${esc(u)}</a>&nbsp;`);
+rtIn()}
+function rtUnlink(){$('#rt_lk').style.display='none';const e=RT.ed;if(RT.lkA){RT.lkA.replaceWith(...RT.lkA.childNodes)}else{e.focus();rtRestore();document.execCommand('unlink')}rtIn()}
+function rtClick(ev){const a=ev.target.closest('a');if(a){ev.preventDefault();const h=a.getAttribute('href');if(h)window.open(h,'_blank','noopener');return}
+const im=ev.target.closest('img');if(im){ev.preventDefault();lbOpen(im)}}
+function rtPaste(ev){const cd=ev.clipboardData;if(!cd)return;
+const fs=[...(cd.files||[])].filter(f=>/^image\//.test(f.type));
+if(fs.length){ev.preventDefault();addImgs(fs);return}
+const h=cd.getData('text/html'),t=cd.getData('text/plain');ev.preventDefault();
+const d=document.createElement('div');d.innerHTML=(h&&clean(h))||esc(t).replace(/\r?\n/g,'<br>');linkify(d);
+document.execCommand('insertHTML',false,d.innerHTML);rtIn()}
+function imgFile(f){return new Promise((res,rej)=>{const u=URL.createObjectURL(f),im=new Image();
+im.onload=()=>{const M=1400,k=Math.min(1,M/Math.max(im.width,im.height)),w=Math.max(1,Math.round(im.width*k)),h=Math.max(1,Math.round(im.height*k)),c=document.createElement('canvas');c.width=w;c.height=h;const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,w,h);x.drawImage(im,0,0,w,h);URL.revokeObjectURL(u);res(c.toDataURL('image/jpeg',.78))};
+im.onerror=()=>{URL.revokeObjectURL(u);rej(new Error('img'))};im.src=u})}
+function rtFiles(inp){const fs=[...inp.files];inp.value='';addImgs(fs)}
+async function addImgs(fs){for(const f of fs){try{const d=await imgFile(f),id='i'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);await IM.put(id,{d,t:Date.now()});
+if(!RT.ed||!document.contains(RT.ed))return;RT.ed.focus();rtRestore();document.execCommand('insertHTML',false,`<img data-i="${id}" src="${d}"><br>`);rtIn()}catch(e){alert('Не вдалося додати зображення')}}}
+const LB={im:null};
+function lbOpen(im){LB.im=im;IM.get(im.dataset.i).then(v=>{$('#lb_i').src=v?v.d:im.src;$('#lb').classList.add('show')})}
+function lbClose(){$('#lb').classList.remove('show');$('#lb_i').removeAttribute('src')}
+function lbDel(){if(!confirm('Видалити зображення з опису?'))return;if(LB.im){LB.im.remove();LB.im=null;rtIn()}lbClose()}
+document.addEventListener('selectionchange',()=>{const s=getSelection();if(RT.ed&&s.rangeCount&&RT.ed.contains(s.anchorNode)){RT.range=s.getRangeAt(0).cloneRange();rtState()}});
 $('#m').addEventListener('click',e=>{if(e.target.id==='m')closeF()});
 
 const CP={id:null,h:0,s:1,v:1,hex:'#ff0000'};
@@ -417,6 +517,7 @@ drag($('#cp_sv'),(x,y)=>{CP.s=x;CP.v=1-y;cpUp()});drag($('#cp_hue'),x=>{CP.h=Mat
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
 if(FC.st==='run'){if(FC.end<=Date.now()){FC.st='done';fsave()}else{fTick0();fWake()}}
 render();
+setTimeout(gcImgs,3000);
 </script>
 </body>
 </html>
