@@ -19,7 +19,7 @@ h1{margin:0;font-size:28px}
 .hb{background:var(--card);color:var(--or);border:0;border-radius:18px;padding:8px 14px;font-size:14px}
 main{flex:1;overflow-y:auto;padding:8px 14px 90px}
 nav{display:flex;background:#111;border-top:1px solid var(--ln)}
-nav button{flex:1;background:none;border:0;color:var(--mu);padding:12px 2px;font-size:12px}
+nav button{flex:1;min-width:0;background:none;border:0;color:var(--mu);padding:8px 0 10px;font-size:10px;letter-spacing:-.2px;white-space:nowrap}nav button .ni{display:block;font-size:20px;line-height:1.25}
 nav button.on{color:var(--or)}
 .card{background:var(--card);border-radius:20px;padding:6px 14px;margin-bottom:14px}
 .r{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--ln)}
@@ -84,16 +84,51 @@ label{display:block;font-size:13px;color:var(--mu);margin:14px 0 6px}
 .dtl{display:block;font-size:22px;line-height:1.25;overflow-wrap:anywhere}
 .kv{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:11px 0;border-bottom:1px solid var(--ln);font-size:15px}.kv:last-child{border:0}
 .kv .k{color:var(--mu);flex:none}.kv .v{text-align:right;overflow-wrap:anywhere}
+
+.hr{display:flex;gap:8px;align-items:center}.hb.ic{padding:8px 11px;font-size:15px}
+.cnt{color:var(--mu)}.cnt.ok{color:#30d158}.di{font-size:12px;margin-left:6px}
+mark{background:#ff9f0a55;color:inherit;border-radius:3px;padding:0 1px}
+.snp{font-size:13px;color:var(--mu);margin-top:3px;overflow-wrap:anywhere}
+.itr{display:flex;gap:8px;align-items:center;margin-bottom:8px}.itr input{flex:1}
+.itx{flex:none;width:40px;height:40px;border:0;border-radius:10px;background:#2c2c2e;color:var(--mu);font-size:20px}
+.addit{background:none;border:0;color:var(--or);font-size:15px;padding:6px 2px}
+#sr{position:fixed;inset:0;background:var(--bg);z-index:8;display:none;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+#sr.show{display:block}
+#sr .in{max-width:560px;height:100%;margin:0 auto;display:flex;flex-direction:column}
+.sbar{display:flex;gap:8px;padding:12px 14px 8px;align-items:center}.sbar input{flex:1;border-radius:14px}
+.sfr{display:flex;align-items:center;gap:10px;padding:2px 14px 8px}
+.fbt{background:var(--card);color:var(--tx);border:0;border-radius:16px;padding:8px 14px;font-size:14px}
+.bdg{background:var(--or);color:#000;border-radius:9px;padding:0 6px;font-size:12px;margin-left:4px}
+#sr_f{display:none;max-height:44vh;overflow-y:auto;padding:0 14px 12px;border-bottom:1px solid var(--ln)}
+#sr_res{flex:1;overflow-y:auto;padding:10px 14px 30px}
+.fd{position:relative;width:min(76vw,290px);aspect-ratio:1;margin:28px auto 26px}
+.fd svg{position:absolute;inset:0;width:100%;height:100%}
+.fd .tr{fill:none;stroke:#2c2c2e;stroke-width:8}
+.fd .rg{fill:none;stroke:var(--or);stroke-width:8;stroke-linecap:round;transition:stroke-dasharray .3s linear,stroke-dashoffset .3s linear}
+.fd .rg.ok{stroke:#30d158}
+.fc{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ft{font-size:54px;font-weight:300;font-variant-numeric:tabular-nums;letter-spacing:-1px}
+.fs{font-size:13px;color:var(--mu);margin-top:6px}
+.fin{display:flex;align-items:flex-start;gap:4px}.fin>div{text-align:center}
+.fin input{width:84px;background:none;border-radius:0;text-align:center;font-size:54px;font-weight:300;padding:0;font-variant-numeric:tabular-nums;-moz-appearance:textfield}
+.fin input::-webkit-inner-spin-button,.fin input::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+.fin .cl{font-size:50px;font-weight:300;color:var(--mu);line-height:1.15}
+.fin small{display:block;font-size:12px;color:var(--mu);margin-top:2px}
+.fb{display:flex;justify-content:center;gap:12px}
+.fb button{min-width:136px;padding:14px;border:0;border-radius:26px;font-size:16px;background:var(--card);color:var(--tx)}
+.fb .pr{background:var(--or);color:#000;font-weight:600}
+@media(max-width:340px){nav button{font-size:9px;letter-spacing:-.3px}}
 </style>
 </head>
 <body>
 <div id="app">
-<header><h1 id="ttl">Martin</h1><button class="hb" id="hb"></button></header>
+<header><h1 id="ttl">Martin</h1><div class="hr"><button class="hb ic" id="sb" onclick="srOpen()" aria-label="Пошук">🔍</button><button class="hb" id="hb"></button></div></header>
 <main id="main"></main>
 <nav id="nav"></nav>
 </div>
 <button class="fab" id="fab" onclick="openForm()">+</button>
 <div id="m"><div class="sheet" id="sheet"></div></div>
+<div id="sr"><div class="in"><div class="sbar"><input id="sq" type="search" placeholder="Пошук завдань" autocomplete="off" enterkeyhint="search" oninput="srRes()"><button class="hb" onclick="srClose()">Закрити</button></div><div class="sfr"><button class="fbt" id="sfb" onclick="srFo()"></button><span id="sfx" style="margin-left:auto"></span></div><div id="sr_f"></div><div id="sr_res"></div></div></div>
 <div id="cp"><div id="cps"><b style="font-size:18px">Вибір кольору</b><div class="cprow"><div id="cp_sw"></div><div id="cp_sv"><div id="cp_cur"></div></div></div><div id="cp_hue"><div id="cp_th"></div></div><div class="row2" style="margin-top:14px"><input id="cp_hex" maxlength="7" style="font-family:monospace" oninput="cpHex(this.value)"></div><div class="btns"><button onclick="cpClose()">Скасувати</button><button class="pr" onclick="cpOk()">Готово</button></div></div></div>
 <script>
 const $=s=>document.querySelector(s);
@@ -110,6 +145,7 @@ let S;try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}
 S=S||JSON.parse(JSON.stringify(DEF));
 if(!S.caps)S.caps=Array(7).fill(S.cap||2);
 if(!S.presets.ind)S.presets.ind=[];
+if(!S.names)S.names={};
 (function(){const R=(l,o,n)=>[...S.presets.diff,...S.tasks.map(t=>t.diff)].forEach(p=>{if(p&&p.l===l&&p.c===o)p.c=n});R('Диплом','#ef4444','#a855f7');R('Важкий','#fb923c','#e5383b')})();
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
 const iso=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
@@ -119,9 +155,15 @@ const fd=s=>{const d=pd(s);return d.getDate()+' '+MON[d.getMonth()]};
 let view='list',cur=new Date(),selDay=today(),F=null;
 cur.setDate(1);
 
+const kn=k=>(S.names&&S.names[k])||KINDS[k];
+const cntH=t=>{const n=(t.items||[]).length;if(!n)return '';const c=t.items.filter(x=>x.d).length;return ` · <span class="cnt${c===n?' ok':''}">☑ ${c}/${n}</span>`};
+const hl=(x,w)=>{x=String(x);if(!w)return esc(x);const re=new RegExp('('+w.map(a=>a.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).sort((a,b)=>b.length-a.length).join('|')+')','gi');return x.split(re).map((p,i)=>i%2?`<mark>${esc(p)}</mark>`:esc(p)).join('')};
+function snip(t,w){if(!w)return '';const src=[t.desc||'',...(t.items||[]).map(i=>i.t)];const lw=w.map(a=>a.toLowerCase());
+for(const raw of src){const x=raw.replace(/\s+/g,' '),lx=x.toLowerCase();let at=-1;for(const a of lw){const j=lx.indexOf(a);if(j>=0&&(at<0||j<at))at=j}
+if(at>=0){const a=Math.max(0,at-30),b=Math.min(x.length,at+70);return `<div class="snp">${a?'…':''}${hl(x.slice(a,b),w)}${b<x.length?'…':''}</div>`}}return ''}
 const indR=t=>t.ind?(t.ind.c?`<div class="pt ind"><span class="pill" style="--c:${t.ind.c}">${esc(t.ind.l)}</span></div>`:`<div class="pt ind">${esc(t.ind.l)}</div>`):'';
-function row(t){const sb=S.subjects.find(s=>s.id===t.subj),od=!t.done&&t.date<today();
-return `<div class="r ${t.done?'dn':''}"><div class="cb ${t.done?'on':''}" onclick="tog('${t.id}')"></div><div class="rm" onclick="openDetail('${t.id}')"><div class="tt">${esc(t.title)}</div><div class="sub">${sb?`<span style="color:${sb.color}">${esc(sb.name)}</span> · `:''}${t.hours||0} год</div><div class="pl">${['type','diff'].map(k=>t[k]?`<span class="pill" style="--c:${t[k].c}">${esc(t[k].l)}</span>`:'').join('')}</div></div><div class="dt ${od?'od':''}">${fd(t.date)}${t.pts!=null&&t.pts!==''?`<div class="pt">${t.pts} б.</div>`:''}${indR(t)}</div></div>`}
+function row(t,w){w=Array.isArray(w)&&w.length?w:null;const sb=S.subjects.find(s=>s.id===t.subj),od=!t.done&&t.date<today();
+return `<div class="r ${t.done?'dn':''}"><div class="cb ${t.done?'on':''}" onclick="tog('${t.id}')"></div><div class="rm" onclick="openDetail('${t.id}')"><div class="tt">${hl(t.title,w)}</div><div class="sub">${sb?`<span style="color:${sb.color}">${esc(sb.name)}</span> · `:''}${t.hours||0} год${cntH(t)}${t.desc?'<span class="di">📝</span>':''}</div>${snip(t,w)}<div class="pl">${['type','diff'].map(k=>t[k]?`<span class="pill" style="--c:${t[k].c}">${esc(t[k].l)}</span>`:'').join('')}</div></div><div class="dt ${od?'od':''}">${fd(t.date)}${t.pts!=null&&t.pts!==''?`<div class="pt">${t.pts} б.</div>`:''}${indR(t)}</div></div>`}
 const open=()=>S.tasks.filter(t=>!t.done).sort((a,b)=>a.date.localeCompare(b.date));
 const heavy=t=>t.diff&&/важк|реферат|диплом/i.test(t.diff.l);
 
@@ -139,18 +181,20 @@ else if(!late)h+=`<div class="ban ok">✅ Навантаження в нормі
 return h}
 
 function render(){
-$('#ttl').textContent={list:'Martin',cal:'Календар',subj:'Предмети',set:'Налаштування',arch:'Архів'}[view];
-const hb=$('#hb');hb.style.display=view==='list'||view==='arch'?'':'none';hb.textContent=view==='arch'?'← Список':'Архів';hb.onclick=()=>go(view==='arch'?'list':'arch');
+$('#ttl').textContent={list:'Martin',cal:'Календар',subj:'Предмети',foc:'Фокус',set:'Налаштування',arch:'Архів'}[view];
+const hb=$('#hb');hb.style.display=view==='list'||view==='arch'?'':'none';hb.textContent=view==='arch'?'← Список':'Архів';hb.onclick=()=>go(view==='arch'?'list':'arch');$('#sb').style.display=view==='set'||view==='foc'?'none':'';
 $('#fab').style.display=view==='list'||view==='cal'?'':'none';
-$('#nav').innerHTML=[['list','📋','Список'],['cal','📅','Календар'],['subj','📚','Предмети'],['set','⚙️','Налаштування']].map(([v,i,n])=>`<button class="${view===v||(v==='list'&&view==='arch')?'on':''}" onclick="go('${v}')">${i}<br>${n}</button>`).join('');
+$('#nav').innerHTML=[['list','📋','Список'],['cal','📅','Календар'],['subj','📚','Предмети'],['foc','⏱️','Фокус'],['set','⚙️','Налаштування']].map(([v,i,n])=>`<button class="${view===v||(v==='list'&&view==='arch')?'on':''}" onclick="go('${v}')"><span class="ni">${i}</span>${n}</button>`).join('');
 const m=$('#main');let h='';
 if(view==='list'){const o=open();h=banner()+(o.length?`<div class="card">${o.map(row).join('')}</div>`:'<div class="empty">Завдань немає 🎉<br>Натисни «+», щоб додати</div>')}
 else if(view==='arch'){const d=S.tasks.filter(t=>t.done).sort((a,b)=>(a.doneAt||0)-(b.doneAt||0));h=d.length?`<div class="card">${d.map(row).join('')}</div>`:'<div class="empty">Архів порожній</div>'}
 else if(view==='cal')h=calView();
 else if(view==='subj')h=subjView();
+else if(view==='foc')h=focView();
 else h=setView();
 m.innerHTML=h;
-if(view==='arch')m.scrollTop=m.scrollHeight;else if(!window._keep)m.scrollTop=0}
+if(view==='arch')m.scrollTop=m.scrollHeight;else if(!window._keep)m.scrollTop=0;
+if(SR.open)srRes()}
 
 function calView(){
 const y=cur.getFullYear(),mo=cur.getMonth(),first=(new Date(y,mo,1).getDay()+6)%7,dim=new Date(y,mo+1,0).getDate();
@@ -169,7 +213,7 @@ h+=`<h3 onclick="togColl('${s.id}')" style="cursor:pointer"><span class="ar">${c
 const no=open().filter(t=>!S.subjects.some(s=>s.id===t.subj));
 if(no.length){const c=S.coll&&S.coll._no;h+=`<h3 onclick="togColl('_no')" style="cursor:pointer"><span class="ar">${c?'▸':'▾'}</span>Без предмета <span style="color:var(--mu);font-weight:400">${no.length}</span></h3>${c?'':`<div class="card">${no.map(row).join('')}</div>`}`}
 return h}
-function setView(){return `<h3>Вільні години на навчання</h3><div class="wk">${['Пн','Вт','Ср','Чт','Пт','Сб','Нд'].map((n,i)=>`<div><div class="wd">${n}</div><input type="number" min="0" max="24" step="0.5" value="${S.caps[i]}" onchange="S.caps[${i}]=Math.max(0,+this.value||0);save()"></div>`).join('')}</div><div class="sub" style="margin-top:6px">Скільки годин у цей день тижня ти реально можеш витратити на завдання. Потрібно для підказок про навантаження.</div><h3>Резервна копія</h3><div class="row2"><button class="hb" onclick="exportData()">⬇ Зберегти копію</button><button class="hb" onclick="$('#imp').click()">⬆ Відновити з копії</button><input type="file" id="imp" accept=".json,application/json" style="display:none" onchange="importData(this)"></div><div class="sub" style="margin-top:6px">Файл збережеться в «Завантаження». Роби копію раз на кілька днів.</div>`}
+function setView(){return `<h3>Вільні години на навчання</h3><div class="wk">${['Пн','Вт','Ср','Чт','Пт','Сб','Нд'].map((n,i)=>`<div><div class="wd">${n}</div><input type="number" min="0" max="24" step="0.5" value="${S.caps[i]}" onchange="S.caps[${i}]=Math.max(0,+this.value||0);save()"></div>`).join('')}</div><div class="sub" style="margin-top:6px">Скільки годин у цей день тижня ти реально можеш витратити на завдання. Потрібно для підказок про навантаження.</div>${indSet()}<h3>Резервна копія</h3><div class="row2"><button class="hb" onclick="exportData()">⬇ Зберегти копію</button><button class="hb" onclick="$('#imp').click()">⬆ Відновити з копії</button><input type="file" id="imp" accept=".json,application/json" style="display:none" onchange="importData(this)"></div><div class="sub" style="margin-top:6px">Файл збережеться в «Завантаження». Роби копію раз на кілька днів.</div>`}
 function togColl(id){S.coll=S.coll||{};S.coll[id]=!S.coll[id];save();window._keep=1;render();window._keep=0}
 function editSubj(id){const s=S.subjects.find(x=>x.id===id);F={sid:id};
 $('#sheet').innerHTML=`<b style="font-size:20px">Змінити предмет</b><label>Назва</label><div class="row2"><input id="es_n" value="${esc(s.name)}">${cbtn('es_c',s.color)}</div><div class="btns"><button class="dl" onclick="if(delSubj('${id}'))closeF()">Видалити</button><button onclick="closeF()">Скасувати</button><button class="pr" onclick="saveSubj()">Зберегти</button></div>`;$('#m').classList.add('show')}
@@ -178,9 +222,128 @@ function saveSubj(){const n=$('#es_n').value.trim();if(!n){alert('Вкажи н�
 function addSubj(){const n=$('#ns').value.trim();if(!n)return;S.subjects.push({id:'s'+Date.now(),name:n,color:$('#nc').dataset.v});save();window._keep=0;render()}
 function delSubj(id){if(!confirm('Видалити предмет? Завдання залишаться без предмета.'))return false;S.subjects=S.subjects.filter(s=>s.id!==id);save();render();return true}
 function exportData(){const b=new Blob([JSON.stringify(S)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='martin-backup-'+today()+'.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000)}
-function importData(inp){const f=inp.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(!Array.isArray(d.tasks)||!Array.isArray(d.subjects)||!d.presets)throw 0;if(!confirm('Замінити поточні дані копією? ('+d.tasks.length+' завдань)')){inp.value='';return}S=d;if(!S.caps)S.caps=Array(7).fill(S.cap||2);if(!S.presets.ind)S.presets.ind=[];save();render()}catch(e){alert('Не вдалося прочитати файл копії')}inp.value=''};r.readAsText(f)}
+function importData(inp){const f=inp.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(!Array.isArray(d.tasks)||!Array.isArray(d.subjects)||!d.presets)throw 0;if(!confirm('Замінити поточні дані копією? ('+d.tasks.length+' завдань)')){inp.value='';return}S=d;if(!S.caps)S.caps=Array(7).fill(S.cap||2);if(!S.presets.ind)S.presets.ind=[];if(!S.names)S.names={};save();render()}catch(e){alert('Не вдалося прочитати файл копії')}inp.value=''};r.readAsText(f)}
 function go(v){view=v;window._keep=0;render()}
 function tog(id){const t=S.tasks.find(t=>t.id===id);t.done=!t.done;t.doneAt=t.done?Date.now():null;save();window._keep=1;render();window._keep=0}
+
+/* subtasks */
+function itDraw(){$('#f_it').innerHTML=F.items.map((x,i)=>`<div class="itr"><input value="${esc(x.t)}" placeholder="Пункт ${i+1}" oninput="F.items[${i}].t=this.value" onkeydown="if(event.key==='Enter'){event.preventDefault();itAdd()}"><button type="button" class="itx" onclick="itDel(${i})">×</button></div>`).join('')}
+function itAdd(){F.items.push({t:'',d:false});itDraw();const l=document.querySelectorAll('#f_it input');l[l.length-1].focus()}
+function itDel(i){F.items.splice(i,1);itDraw()}
+function itsH(t){const n=(t.items||[]).length;if(!n)return '';const c=t.items.filter(x=>x.d).length;
+return `<label>Пункти <span id="d_cnt" class="cnt">${c}/${n}</span></label><div class="card" style="margin-bottom:0">${t.items.map((x,i)=>`<div class="r ${x.d?'dn':''}" onclick="togIt('${t.id}',${i},this)"><div class="cb ${x.d?'on':''}"></div><div class="rm"><div class="tt" style="font-size:16px">${esc(x.t)}</div></div></div>`).join('')}</div>`}
+function togIt(id,i,row){const t=S.tasks.find(x=>x.id===id);if(!t)return;const it=t.items[i];it.d=!it.d;save();
+row.classList.toggle('dn',it.d);row.querySelector('.cb').classList.toggle('on',it.d);
+$('#d_cnt').textContent=t.items.filter(x=>x.d).length+'/'+t.items.length;window._keep=1;render();window._keep=0}
+
+/* indicators in settings */
+let indOpen=false;
+function togInd(){indOpen=!indOpen;window._keep=1;render();window._keep=0}
+function indSet(){
+let h=`<h3 onclick="togInd()" style="cursor:pointer"><span class="ar">${indOpen?'▾':'▸'}</span>Індикатори</h3>`;
+if(!indOpen)return h;
+['type','ind'].forEach(k=>{
+const miss=k==='type'&&DEF.presets.type.some(d=>!S.presets.type.some(p=>p.l===d.l));
+h+=`<div class="card" style="padding-bottom:10px"><label style="margin-top:12px">Назва індикатора</label><input value="${esc(kn(k))}" onchange="renKind('${k}',this)">
+${S.presets[k].map((p,i)=>`<div class="r"><span class="sw" style="background:${p.c||'#e5e5ea'}"></span><div class="rm tt" style="font-size:16px">${esc(p.l)}</div><button class="x2" style="margin:0" onclick="editPreset('${k}',${i})">змінити</button></div>`).join('')}
+<div class="row2" style="padding-top:10px"><button class="hb" onclick="editPreset('${k}',-1)">＋ Додати</button>${miss?`<button class="x2" onclick="resetTypes()">Повернути стандартні</button>`:''}</div></div>`});
+return h}
+function renKind(k,el){const v=el.value.trim();if(v&&v!==KINDS[k])S.names[k]=v;else delete S.names[k];el.value=kn(k);save()}
+function editPreset(k,i){const p=i>=0?S.presets[k][i]:null;F={pk:k,pi:i};
+$('#sheet').innerHTML=`<b style="font-size:20px">${p?'Змінити значення':'Нове значення'}</b><label>Назва</label><div class="row2"><input id="ep_n" value="${p?esc(p.l):''}" placeholder="Назва значення">${cbtn('ep_c',p&&p.c?p.c:'#ff4d8d')}</div>${k==='ind'?`<label class="ck" style="margin-top:14px"><input type="checkbox" id="ep_ck" ${!p||p.c?'checked':''} onchange="$('#ep_c').style.display=this.checked?'':'none'">З кольором</label>`:''}<div class="btns">${p?'<button class="dl" onclick="delPresetS()">Видалити</button>':''}<button onclick="closeF()">Скасувати</button><button class="pr" onclick="savePreset()">Зберегти</button></div>`;
+if(k==='ind'&&p&&!p.c)$('#ep_c').style.display='none';
+$('#sheet').scrollTop=0;$('#m').classList.add('show')}
+function savePreset(){const k=F.pk,n=$('#ep_n').value.trim();if(!n){alert('Вкажи назву');return}
+const col=k==='ind'&&!$('#ep_ck').checked?null:$('#ep_c').dataset.v;
+if(S.presets[k].some((p,j)=>j!==F.pi&&p.l.toLowerCase()===n.toLowerCase())){alert('Таке значення вже є');return}
+const nv={l:n,c:col};
+if(F.pi>=0){const old=S.presets[k][F.pi];S.tasks.forEach(t=>{if(same(t[k],old))t[k]={...nv}});S.presets[k][F.pi]=nv}else S.presets[k].push(nv);
+save();closeF();window._keep=1;render();window._keep=0}
+function delPresetS(){const k=F.pk,p=S.presets[k][F.pi];if(!confirm('Видалити «'+p.l+'»? У вже створених завданнях він залишиться.'))return;S.presets[k].splice(F.pi,1);save();closeF();window._keep=1;render();window._keep=0}
+function resetTypes(){DEF.presets.type.forEach(d=>{if(!S.presets.type.some(p=>p.l===d.l))S.presets.type.push({...d})});save();window._keep=1;render();window._keep=0}
+
+/* search + filters */
+const SR={open:false,fo:false,st:'all',subj:[],type:[],diff:[],ind:[]};
+function srOpen(){SR.open=true;$('#sr').classList.add('show');srUp();setTimeout(()=>$('#sq').focus(),60)}
+function srClose(){SR.open=false;$('#sr').classList.remove('show')}
+function srFo(){SR.fo=!SR.fo;srUp()}
+function srCnt(){return (SR.st!=='all'?1:0)+SR.subj.length+SR.type.length+SR.diff.length+SR.ind.length}
+function srReset(){SR.st='all';SR.subj=[];SR.type=[];SR.diff=[];SR.ind=[];srUp()}
+function srT(g,v){const a=SR[g],i=a.indexOf(v);if(i<0)a.push(v);else a.splice(i,1);srUp()}
+function srSt(v){SR.st=v;srUp()}
+function srVals(k){const o=[];[...S.presets[k],...S.tasks.map(t=>t[k])].forEach(p=>{if(p&&!o.some(x=>x.l===p.l))o.push(p)});return o}
+const chp=(g,v,t,c)=>`<span class="chip ${SR[g].includes(v)?'on':''}" style="--c:${c||'#e5e5ea'}" data-v="${esc(v)}" onclick="srT('${g}',this.dataset.v)">${esc(t)}</span>`;
+function srUp(){const n=srCnt();
+$('#sfb').innerHTML='Фільтри '+(SR.fo?'▴':'▾')+(n?` <b class="bdg">${n}</b>`:'');
+$('#sfx').innerHTML=n?'<button class="x2" onclick="srReset()">Скинути</button>':'';
+const f=$('#sr_f');f.style.display=SR.fo?'block':'none';
+if(SR.fo){let h=`<label style="margin-top:4px">Статус</label><div class="chips">${[['all','Усі'],['act','Активні'],['done','Виконані'],['late','Прострочені']].map(([v,t])=>`<span class="chip ${SR.st===v?'on':''}" style="--c:#e5e5ea" onclick="srSt('${v}')">${t}</span>`).join('')}</div>`;
+h+=`<label>Предмет</label><div class="chips">${[...S.subjects.map(s=>[s.id,s.name,s.color]),['_no','Без предмета','#8e8e93']].map(([v,t,c])=>chp('subj',v,t,c)).join('')}</div>`;
+['type','diff','ind'].forEach(k=>{const vs=srVals(k);if(vs.length)h+=`<label>${kn(k)}</label><div class="chips">${vs.map(p=>chp(k,p.l,p.l,p.c)).join('')}</div>`});
+f.innerHTML=h}
+srRes()}
+function srMatch(t,w){
+if(SR.st==='act'&&t.done)return false;if(SR.st==='done'&&!t.done)return false;if(SR.st==='late'&&(t.done||t.date>=today()))return false;
+if(SR.subj.length&&!SR.subj.includes(S.subjects.some(s=>s.id===t.subj)?t.subj:'_no'))return false;
+for(const k of ['type','diff','ind'])if(SR[k].length&&!(t[k]&&SR[k].includes(t[k].l)))return false;
+if(!w.length)return true;
+const sb=S.subjects.find(s=>s.id===t.subj);
+const hay=[t.title,t.desc,sb&&sb.name,...['type','diff','ind'].map(k=>t[k]&&t[k].l),...(t.items||[]).map(i=>i.t)].filter(Boolean).join(' ').toLowerCase();
+return w.every(x=>hay.includes(x.toLowerCase()))}
+function srRes(){const q=$('#sq').value.trim(),w=q?q.split(/\s+/):[];
+const r=S.tasks.filter(t=>srMatch(t,w)).sort((a,b)=>(a.done-b.done)||(a.done?(b.doneAt||0)-(a.doneAt||0):a.date.localeCompare(b.date)));
+$('#sr_res').innerHTML=(w.length||srCnt())?(r.length?`<div class="sub" style="margin:2px 4px 8px">Знайдено: ${r.length}</div><div class="card">${r.map(t=>row(t,w)).join('')}</div>`:'<div class="empty">Нічого не знайдено</div>'):'<div class="empty">Введи слово або обери фільтри</div>'}
+
+/* focus session */
+const FK='martin_focus';
+let FC;try{FC=JSON.parse(localStorage.getItem(FK))}catch(e){}
+FC=FC||{h:0,m:25,st:'idle'};
+const fsave=()=>{try{localStorage.setItem(FK,JSON.stringify(FC))}catch(e){}};
+const RC=2*Math.PI*100,p2=n=>String(n).padStart(2,'0');
+let fTimer=null,wl=null,actx=null;
+const hhmm=ts=>{const d=new Date(ts);return p2(d.getHours())+':'+p2(d.getMinutes())};
+const fFmt=ms=>{const s=Math.ceil(ms/1000),h=Math.floor(s/3600),m=Math.floor(s%3600/60);return (h?h+':'+p2(m):p2(m))+':'+p2(s%60)};
+const fDur=ms=>{const m=Math.round(ms/60000),h=Math.floor(m/60);return ((h?h+' год ':'')+(m%60?m%60+' хв':'')).trim()||'0 хв'};
+const fLeft=()=>FC.st==='run'?Math.max(0,FC.end-Date.now()):FC.st==='pause'?FC.left:0;
+function focView(){
+const st=FC.st,L=fLeft(),frac=st==='run'||st==='pause'?L/FC.dur:1,rem=RC*Math.max(0,Math.min(1,frac));
+const ring=`<svg viewBox="0 0 220 220"><circle class="tr" cx="110" cy="110" r="100"/><circle class="rg ${st==='done'?'ok':''}" id="f_rg" cx="110" cy="110" r="100" transform="rotate(-90 110 110)" style="stroke-dasharray:${rem} ${RC};stroke-dashoffset:${-(RC-rem)};opacity:${rem<=.5?0:1}"/></svg>`;
+let mid,btn;
+if(st==='idle'){
+mid=`<div class="fin"><div><input id="f_h" type="number" inputmode="numeric" min="0" max="24" value="${FC.h}" onfocus="this.select()"><small>год</small></div><span class="cl">:</span><div><input id="f_m" type="number" inputmode="numeric" min="0" max="59" value="${FC.m}" onfocus="this.select()"><small>хв</small></div></div>`;
+btn=`<button class="pr" onclick="fStart()">Почати</button>`}
+else if(st==='done'){
+mid=`<div class="ft" style="font-size:42px;letter-spacing:0">Готово</div><div class="fs">Фокус ${fDur(FC.dur)}</div>`;
+btn=`<button class="pr" onclick="fReset()">Нова сесія</button>`}
+else{
+mid=`<div class="ft" id="f_t" style="${st==='pause'?'opacity:.55':''}">${fFmt(L)}</div><div class="fs" id="f_s">${st==='pause'?'Пауза':'до '+hhmm(FC.end)}</div>`;
+btn=`<button class="pr" onclick="fPause()">${st==='pause'?'Продовжити':'Пауза'}</button><button onclick="fReset()">Скинути</button>`}
+return `<div class="fd">${ring}<div class="fc">${mid}</div></div><div class="fb">${btn}</div>`}
+function fStart(){
+const h=Math.max(0,Math.floor(+$('#f_h').value||0)),m=Math.max(0,Math.floor(+$('#f_m').value||0)),tot=(h*60+m)*60000;
+if(!tot){alert('Вкажи час: години або хвилини');return}
+if(tot>864e5){alert('Не більше 24 годин');return}
+FC.h=h;FC.m=m;FC.dur=tot;FC.end=Date.now()+tot;FC.st='run';fsave();
+try{actx=actx||new (window.AudioContext||window.webkitAudioContext)();if(actx.resume)actx.resume()}catch(e){}
+fWake();fTick0();render()}
+function fPause(){
+if(FC.st==='run'){FC.left=Math.max(0,FC.end-Date.now());FC.st='pause';clearInterval(fTimer);fWakeOff()}
+else if(FC.st==='pause'){FC.end=Date.now()+FC.left;FC.st='run';fWake();fTick0()}
+fsave();render()}
+function fReset(){if((FC.st==='run'||FC.st==='pause')&&!confirm('Скинути таймер?'))return;
+clearInterval(fTimer);fWakeOff();FC.st='idle';fsave();render()}
+function fTick0(){clearInterval(fTimer);fTimer=setInterval(fTick,250)}
+function fTick(){
+if(FC.st!=='run'){clearInterval(fTimer);return}
+const L=Math.max(0,FC.end-Date.now());
+if(L<=0){FC.st='done';fsave();clearInterval(fTimer);fWakeOff();fBeep();window._keep=1;render();window._keep=0;return}
+if(view==='foc'){const t=$('#f_t'),g=$('#f_rg');if(t&&g){t.textContent=fFmt(L);const rem=RC*L/FC.dur;g.style.strokeDasharray=rem+' '+RC;g.style.strokeDashoffset=-(RC-rem);g.style.opacity=rem<=.5?0:1}}}
+function fBeep(){
+try{navigator.vibrate&&navigator.vibrate([300,120,300,120,300])}catch(e){}
+try{if(!actx)return;[0,.35,.7].forEach(d=>{const o=actx.createOscillator(),g=actx.createGain(),t=actx.currentTime+d;o.type='sine';o.frequency.value=880;o.connect(g);g.connect(actx.destination);g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.3,t+.02);g.gain.exponentialRampToValueAtTime(.0001,t+.3);o.start(t);o.stop(t+.32)})}catch(e){}}
+async function fWake(){try{if('wakeLock' in navigator&&FC.st==='run'&&!wl){wl=await navigator.wakeLock.request('screen');wl.addEventListener('release',()=>{wl=null})}}catch(e){}}
+function fWakeOff(){try{wl&&wl.release()}catch(e){}wl=null}
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&FC.st==='run'){fTick();fWake()}});
 
 /* form */
 const same=(a,b)=>a&&b&&a.l===b.l&&a.c===b.c;
@@ -191,7 +354,7 @@ if(k!=='ind')return `<div class="cu ${v?'show':''}" id="cu_${k}">${ib}</div>`;
 return `<div class="cu col ${v?'show':''}" id="cu_ind"><div class="row2">${ib}</div><label class="ck"><input type="checkbox" id="ck_ind" ${nc?'':'checked'} onchange="cuIn('ind')">З кольором</label></div>`}
 function openForm(id){
 const t=id&&S.tasks.find(t=>t.id===id);
-F={id:id||null,sel:{},cu:{},orig:{}};
+F={id:id||null,sel:{},cu:{},orig:{},items:t&&t.items?t.items.map(x=>({...x})):[]};
 Object.keys(KINDS).forEach(k=>{F.sel[k]=t&&t[k]?{...t[k]}:null;F.orig[k]=F.sel[k]?{...F.sel[k]}:null;F.cu[k]=!!(F.sel[k]&&!S.presets[k].some(p=>same(p,F.sel[k])))});
 const dflt=view==='cal'?selDay:today();
 $('#sheet').innerHTML=`<b style="font-size:20px">${t?'Редагувати':'Нове завдання'}</b>
@@ -200,10 +363,11 @@ $('#sheet').innerHTML=`<b style="font-size:20px">${t?'Редагувати':'Н�
 <label>Дедлайн</label><input type="date" id="f_d" value="${t?t.date:dflt}">
 <label>Скільки годин потрібно (сумарно)</label><input type="number" id="f_h" min="0" step="0.5" value="${t?t.hours:''}" placeholder="Напр. 3">
 <label>Бали за завдання (необов'язково)</label><input type="number" id="f_p" min="0" step="0.5" value="${t&&t.pts!=null?t.pts:''}" placeholder="Напр. 10">
-${Object.entries(KINDS).map(([k,n])=>`<label>${n}</label><div class="chips" id="ch_${k}"></div>${cuBox(k)}`).join('')}
+${Object.entries(KINDS).map(([k,n])=>`<label>${kn(k)}</label><div class="chips" id="ch_${k}"></div>${cuBox(k)}`).join('')}
 ${t?'':`<label>Опис (необов'язково)</label><textarea id="f_ds" rows="3" placeholder="Що саме треба зробити, посилання, нотатки…"></textarea>`}
+<label>Пункти (необов'язково)</label><div id="f_it"></div><button type="button" class="addit" onclick="itAdd()">＋ Додати пункт</button>
 <div class="btns">${t?'<button class="dl" onclick="del()">Видалити</button>':''}<button onclick="cancelF()">Скасувати</button><button class="pr" onclick="saveF()">Зберегти</button></div>`;
-Object.keys(KINDS).forEach(k=>chips(k));indUI();
+Object.keys(KINDS).forEach(k=>chips(k));indUI();itDraw();
 $('#sheet').scrollTop=0;$('#m').classList.add('show')}
 function chips(k){$('#ch_'+k).innerHTML=S.presets[k].map((p,i)=>`<span class="chip ${!F.cu[k]&&same(F.sel[k],p)?'on':''}" style="--c:${p.c||'#e5e5ea'}" onclick="pick('${k}',${i})">${esc(p.l)}${k!=='type'&&DEF.presets[k].some(d=>same(d,p))?'':`<b class="cx" onclick="event.stopPropagation();delPreset('${k}',${i})">×</b>`}</span>`).join('')+`<span class="chip ${F.cu[k]?'on':''}" onclick="cust('${k}')">＋ Своє</span>`}
 function delPreset(k,i){const p=S.presets[k][i];if(!confirm('Видалити індикатор «'+p.l+'»? У вже створених завданнях він залишиться.'))return;S.presets[k].splice(i,1);if(same(F.sel[k],p)){F.sel[k]=null;F.cu[k]=false;$('#cu_'+k).classList.remove('show')}save();chips(k)}
@@ -219,7 +383,7 @@ const title=$('#f_t').value.trim(),date=$('#f_d').value;
 if(!title||!date){alert('Вкажи назву і дедлайн');return}
 Object.keys(KINDS).forEach(k=>{if(F.cu[k]&&F.sel[k]&&!same(F.sel[k],F.orig[k])&&!S.presets[k].some(p=>p.l===F.sel[k].l))S.presets[k].push({...F.sel[k]})});
 let sid=$('#f_s').value;if(sid==='__new'){const n=$('#ns2').value.trim();if(!n){alert('Вкажи назву нового предмета');return}const ex=S.subjects.find(s=>s.name.toLowerCase()===n.toLowerCase());if(ex)sid=ex.id;else{sid='s'+Date.now();S.subjects.push({id:sid,name:n,color:$('#nc2').dataset.v})}}
-const d={title,date,subj:sid,hours:parseFloat($('#f_h').value)||0,type:F.sel.type,diff:F.sel.diff,ind:F.sel.ind,pts:$('#f_p').value===''?null:parseFloat($('#f_p').value)};
+const d={title,date,subj:sid,hours:parseFloat($('#f_h').value)||0,type:F.sel.type,diff:F.sel.diff,ind:F.sel.ind,items:F.items.map(x=>({t:x.t.trim(),d:!!x.d})).filter(x=>x.t),pts:$('#f_p').value===''?null:parseFloat($('#f_p').value)};
 if(F.id)Object.assign(S.tasks.find(t=>t.id===F.id),d);else S.tasks.push({id:'t'+Date.now(),done:false,desc:$('#f_ds').value.trim(),...d});
 save();if(F.id){const id=F.id;window._keep=1;render();window._keep=0;openDetail(id)}else{closeF();render()}}
 function del(){if(!confirm('Видалити завдання?'))return;S.tasks=S.tasks.filter(t=>t.id!==F.id);save();closeF();window._keep=1;render();window._keep=0}
@@ -230,9 +394,9 @@ function openDetail(id){
 const t=S.tasks.find(x=>x.id===id);if(!t)return;
 const kv=(a,b)=>`<div class="kv"><span class="k">${a}</span><span class="v">${b}</span></div>`;
 const sb=S.subjects.find(s=>s.id===t.subj),od=!t.done&&t.date<today();
-const ks=Object.entries(KINDS).filter(([k])=>t[k]).map(([k,n])=>kv(n,indH(t[k]))).join('');
+const ks=Object.entries(KINDS).filter(([k])=>t[k]).map(([k])=>kv(kn(k),indH(t[k]))).join('');
 $('#sheet').innerHTML=`<b class="dtl">${esc(t.title)}</b>
-<div class="card" style="margin:14px 0 4px">${sb?kv('Предмет',`<span style="color:${sb.color}">${esc(sb.name)}</span>`):''}${kv('Дедлайн',`<span style="color:${od?'#ff453a':'var(--or)'}">${fdl(t.date)}</span>`)}${kv('Години',(t.hours||0)+' год')}${t.pts!=null&&t.pts!==''?kv('Бали',t.pts):''}${ks}${t.done?kv('Статус','Виконано ✓'):''}</div>
+<div class="card" style="margin:14px 0 4px">${sb?kv('Предмет',`<span style="color:${sb.color}">${esc(sb.name)}</span>`):''}${kv('Дедлайн',`<span style="color:${od?'#ff453a':'var(--or)'}">${fdl(t.date)}</span>`)}${kv('Години',(t.hours||0)+' год')}${t.pts!=null&&t.pts!==''?kv('Бали',t.pts):''}${ks}${t.done?kv('Статус','Виконано ✓'):''}</div>${itsH(t)}
 <label>Опис</label><textarea id="d_ds" placeholder="Додай опис завдання…" oninput="descIn('${id}',this)">${esc(t.desc||'')}</textarea>
 <div class="btns"><button onclick="closeF()">Закрити</button><button class="pr" onclick="openForm('${id}')">Редагувати</button></div>`;
 $('#sheet').scrollTop=0;$('#m').classList.add('show');autoH($('#d_ds'))}
@@ -251,6 +415,7 @@ function cpOk(){const el=$('#'+CP.id);el.dataset.v=CP.hex;el.style.background=CP
 function drag(el,fn){const mv=e=>{const r=el.getBoundingClientRect();fn(Math.min(1,Math.max(0,(e.clientX-r.left)/r.width)),Math.min(1,Math.max(0,(e.clientY-r.top)/r.height)))};el.addEventListener('pointerdown',e=>{el.setPointerCapture(e.pointerId);mv(e);el.onpointermove=mv});el.addEventListener('pointerup',()=>{el.onpointermove=null})}
 drag($('#cp_sv'),(x,y)=>{CP.s=x;CP.v=1-y;cpUp()});drag($('#cp_hue'),x=>{CP.h=Math.min(359.99,x*360);cpUp()});
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+if(FC.st==='run'){if(FC.end<=Date.now()){FC.st='done';fsave()}else{fTick0();fWake()}}
 render();
 </script>
 </body>
