@@ -50,13 +50,16 @@ nav button.on{color:var(--or)}
 h3{margin:18px 4px 8px;font-size:15px;display:flex;align-items:center;gap:8px}
 .sw{width:12px;height:12px;border-radius:50%;display:inline-block}
 .x2{margin-left:auto;background:none;border:0;color:var(--mu);font-size:13px}
-input,select{background:#2c2c2e;color:var(--tx);border:0;border-radius:10px;padding:11px;font-size:16px;width:100%;font-family:inherit}
+input,select,textarea{background:#2c2c2e;color:var(--tx);border:0;border-radius:10px;padding:11px;font-size:16px;width:100%;font-family:inherit}
+textarea{display:block;min-height:110px;max-height:40vh;resize:none;line-height:1.35}
+input[type=checkbox]{width:22px;height:22px;padding:0;flex:none;accent-color:#ff9f0a}
+.ck{display:flex;align-items:center;gap:10px;margin:2px 0 0;font-size:14px;color:var(--tx)}
 input[type=color]{width:46px;padding:2px;height:42px;flex:none}
 label{display:block;font-size:13px;color:var(--mu);margin:14px 0 6px}
 .chips{display:flex;flex-wrap:wrap;gap:7px}
 .chip{padding:6px 12px;border-radius:16px;border:1.5px solid var(--c,#666);color:var(--c,#bbb);font-size:14px}
 .chip.on{background:var(--c,#555);color:#000;font-weight:600}
-.cu{display:none;gap:8px;margin-top:8px}.cu.show{display:flex}
+.cu{display:none;gap:8px;margin-top:8px}.cu.show{display:flex}.cu.col{flex-direction:column;gap:10px}
 #m{position:fixed;inset:0;background:#000d;display:none;align-items:flex-end;justify-content:center;z-index:9}
 #m.show{display:flex}
 .sheet{background:#161618;width:100%;max-width:560px;max-height:94%;overflow-y:auto;border-radius:24px 24px 0 0;padding:18px 18px calc(18px + env(safe-area-inset-bottom,0px))}
@@ -77,6 +80,10 @@ label{display:block;font-size:13px;color:var(--mu);margin:14px 0 6px}
 #cp_cur{position:absolute;width:22px;height:22px;border:2px solid #fff;border-radius:50%;transform:translate(-50%,-50%);pointer-events:none;box-shadow:0 0 3px #0008}
 #cp_hue{position:relative;height:14px;border-radius:7px;margin:24px 10px 6px;touch-action:none;background:linear-gradient(to right,#f00,#ff0,#0f0,#0ff,#00f,#f0f,#f00)}
 #cp_th{position:absolute;top:50%;width:26px;height:26px;border-radius:50%;border:3px solid #fff;transform:translate(-50%,-50%);pointer-events:none;box-shadow:0 0 3px #0008}
+.dt .pt.ind{white-space:normal;max-width:120px;margin-left:auto;overflow-wrap:anywhere}
+.dtl{display:block;font-size:22px;line-height:1.25;overflow-wrap:anywhere}
+.kv{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:11px 0;border-bottom:1px solid var(--ln);font-size:15px}.kv:last-child{border:0}
+.kv .k{color:var(--mu);flex:none}.kv .v{text-align:right;overflow-wrap:anywhere}
 </style>
 </head>
 <body>
@@ -92,16 +99,17 @@ label{display:block;font-size:13px;color:var(--mu);margin:14px 0 6px}
 const $=s=>document.querySelector(s);
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const cbtn=(id,v,on)=>`<button type="button" class="cs" id="${id}" data-v="${v}" style="background:${v}" onclick="cpOpen('${id}')"${on?` onchange="${on}"`:''}></button>`;
-const KEY='martin_v1',KINDS={type:'Тип завдання',diff:'Важкість'};
+const KEY='martin_v1',KINDS={type:'Тип завдання',diff:'Важкість',ind:'Свій індикатор'};
 const MON=['січ','лют','бер','кві','тра','чер','лип','сер','вер','жов','лис','гру'];
 const MONF=['Січень','Лютий','Березень','Квітень','Травень','Червень','Липень','Серпень','Вересень','Жовтень','Листопад','Грудень'];
 const DEF={tasks:[],cap:2,subjects:[{id:'s1',name:'Фізика',color:'#38bdf8'},{id:'s2',name:'Історія України',color:'#fb923c'},{id:'s3',name:'Основи академ. письма',color:'#a78bfa'}],
-presets:{type:[{l:'Творчий',c:'#a78bfa'},{l:'Математичний',c:'#38bdf8'},{l:'Рутинний',c:'#94a3b8'}],
+presets:{ind:[],type:[{l:'Творчий',c:'#a78bfa'},{l:'Математичний',c:'#38bdf8'},{l:'Рутинний',c:'#94a3b8'}],
 diff:[{l:'Легкий',c:'#4ade80'},{l:'Середній',c:'#facc15'},{l:'Важкий',c:'#e5383b'},{l:'Реферат',c:'#f472b6'},{l:'Диплом',c:'#a855f7'}],
 time:[{l:'5 хв',c:'#4ade80'},{l:'30 хв',c:'#a3e635'},{l:'Година',c:'#facc15'},{l:'На кілька днів',c:'#fb923c'}]}};
 let S;try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}
 S=S||JSON.parse(JSON.stringify(DEF));
 if(!S.caps)S.caps=Array(7).fill(S.cap||2);
+if(!S.presets.ind)S.presets.ind=[];
 (function(){const R=(l,o,n)=>[...S.presets.diff,...S.tasks.map(t=>t.diff)].forEach(p=>{if(p&&p.l===l&&p.c===o)p.c=n});R('Диплом','#ef4444','#a855f7');R('Важкий','#fb923c','#e5383b')})();
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
 const iso=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
@@ -111,8 +119,9 @@ const fd=s=>{const d=pd(s);return d.getDate()+' '+MON[d.getMonth()]};
 let view='list',cur=new Date(),selDay=today(),F=null;
 cur.setDate(1);
 
+const indR=t=>t.ind?(t.ind.c?`<div class="pt ind"><span class="pill" style="--c:${t.ind.c}">${esc(t.ind.l)}</span></div>`:`<div class="pt ind">${esc(t.ind.l)}</div>`):'';
 function row(t){const sb=S.subjects.find(s=>s.id===t.subj),od=!t.done&&t.date<today();
-return `<div class="r ${t.done?'dn':''}"><div class="cb ${t.done?'on':''}" onclick="tog('${t.id}')"></div><div class="rm" onclick="openForm('${t.id}')"><div class="tt">${esc(t.title)}</div><div class="sub">${sb?`<span style="color:${sb.color}">${esc(sb.name)}</span> · `:''}${t.hours||0} год</div><div class="pl">${['type','diff'].map(k=>t[k]?`<span class="pill" style="--c:${t[k].c}">${esc(t[k].l)}</span>`:'').join('')}</div></div><div class="dt ${od?'od':''}">${fd(t.date)}${t.pts!=null&&t.pts!==''?`<div class="pt">${t.pts} б.</div>`:''}</div></div>`}
+return `<div class="r ${t.done?'dn':''}"><div class="cb ${t.done?'on':''}" onclick="tog('${t.id}')"></div><div class="rm" onclick="openDetail('${t.id}')"><div class="tt">${esc(t.title)}</div><div class="sub">${sb?`<span style="color:${sb.color}">${esc(sb.name)}</span> · `:''}${t.hours||0} год</div><div class="pl">${['type','diff'].map(k=>t[k]?`<span class="pill" style="--c:${t[k].c}">${esc(t[k].l)}</span>`:'').join('')}</div></div><div class="dt ${od?'od':''}">${fd(t.date)}${t.pts!=null&&t.pts!==''?`<div class="pt">${t.pts} б.</div>`:''}${indR(t)}</div></div>`}
 const open=()=>S.tasks.filter(t=>!t.done).sort((a,b)=>a.date.localeCompare(b.date));
 const heavy=t=>t.diff&&/важк|реферат|диплом/i.test(t.diff.l);
 
@@ -169,16 +178,21 @@ function saveSubj(){const n=$('#es_n').value.trim();if(!n){alert('Вкажи н�
 function addSubj(){const n=$('#ns').value.trim();if(!n)return;S.subjects.push({id:'s'+Date.now(),name:n,color:$('#nc').dataset.v});save();window._keep=0;render()}
 function delSubj(id){if(!confirm('Видалити предмет? Завдання залишаться без предмета.'))return false;S.subjects=S.subjects.filter(s=>s.id!==id);save();render();return true}
 function exportData(){const b=new Blob([JSON.stringify(S)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='martin-backup-'+today()+'.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000)}
-function importData(inp){const f=inp.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(!Array.isArray(d.tasks)||!Array.isArray(d.subjects)||!d.presets)throw 0;if(!confirm('Замінити поточні дані копією? ('+d.tasks.length+' завдань)')){inp.value='';return}S=d;if(!S.caps)S.caps=Array(7).fill(S.cap||2);save();render()}catch(e){alert('Не вдалося прочитати файл копії')}inp.value=''};r.readAsText(f)}
+function importData(inp){const f=inp.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(!Array.isArray(d.tasks)||!Array.isArray(d.subjects)||!d.presets)throw 0;if(!confirm('Замінити поточні дані копією? ('+d.tasks.length+' завдань)')){inp.value='';return}S=d;if(!S.caps)S.caps=Array(7).fill(S.cap||2);if(!S.presets.ind)S.presets.ind=[];save();render()}catch(e){alert('Не вдалося прочитати файл копії')}inp.value=''};r.readAsText(f)}
 function go(v){view=v;window._keep=0;render()}
 function tog(id){const t=S.tasks.find(t=>t.id===id);t.done=!t.done;t.doneAt=t.done?Date.now():null;save();window._keep=1;render();window._keep=0}
 
 /* form */
 const same=(a,b)=>a&&b&&a.l===b.l&&a.c===b.c;
+function cuBox(k){
+const v=F.cu[k]&&F.sel[k],nc=k==='ind'&&v&&F.sel[k].c==null;
+const ib=`<input id="ct_${k}" placeholder="${k==='ind'?'Назва індикатора':'Своя назва'}" value="${v?esc(F.sel[k].l):''}" oninput="cuIn('${k}')">${cbtn('cc_'+k,v&&F.sel[k].c?F.sel[k].c:'#ff4d8d',"cuIn('"+k+"')")}`;
+if(k!=='ind')return `<div class="cu ${v?'show':''}" id="cu_${k}">${ib}</div>`;
+return `<div class="cu col ${v?'show':''}" id="cu_ind"><div class="row2">${ib}</div><label class="ck"><input type="checkbox" id="ck_ind" ${nc?'':'checked'} onchange="cuIn('ind')">З кольором</label></div>`}
 function openForm(id){
 const t=id&&S.tasks.find(t=>t.id===id);
-F={id:id||null,sel:{},cu:{}};
-Object.keys(KINDS).forEach(k=>{F.sel[k]=t&&t[k]?{...t[k]}:null;F.cu[k]=!!(F.sel[k]&&!S.presets[k].some(p=>same(p,F.sel[k])))});
+F={id:id||null,sel:{},cu:{},orig:{}};
+Object.keys(KINDS).forEach(k=>{F.sel[k]=t&&t[k]?{...t[k]}:null;F.orig[k]=F.sel[k]?{...F.sel[k]}:null;F.cu[k]=!!(F.sel[k]&&!S.presets[k].some(p=>same(p,F.sel[k])))});
 const dflt=view==='cal'?selDay:today();
 $('#sheet').innerHTML=`<b style="font-size:20px">${t?'Редагувати':'Нове завдання'}</b>
 <label>Назва</label><input id="f_t" value="${t?esc(t.title):''}" placeholder="Напр. Контрольна з фізики">
@@ -186,26 +200,44 @@ $('#sheet').innerHTML=`<b style="font-size:20px">${t?'Редагувати':'Н�
 <label>Дедлайн</label><input type="date" id="f_d" value="${t?t.date:dflt}">
 <label>Скільки годин потрібно (сумарно)</label><input type="number" id="f_h" min="0" step="0.5" value="${t?t.hours:''}" placeholder="Напр. 3">
 <label>Бали за завдання (необов'язково)</label><input type="number" id="f_p" min="0" step="0.5" value="${t&&t.pts!=null?t.pts:''}" placeholder="Напр. 10">
-${Object.entries(KINDS).map(([k,n])=>`<label>${n}</label><div class="chips" id="ch_${k}"></div><div class="cu ${F.cu[k]?'show':''}" id="cu_${k}"><input id="ct_${k}" placeholder="Своя назва" value="${F.cu[k]?esc(F.sel[k].l):''}" oninput="cuIn('${k}')">${cbtn('cc_'+k,F.cu[k]?F.sel[k].c:'#ff4d8d',"cuIn('"+k+"')")}</div>`).join('')}
-<div class="btns">${t?'<button class="dl" onclick="del()">Видалити</button>':''}<button onclick="closeF()">Скасувати</button><button class="pr" onclick="saveF()">Зберегти</button></div>`;
-Object.keys(KINDS).forEach(chips);
-$('#m').classList.add('show')}
-function chips(k){$('#ch_'+k).innerHTML=S.presets[k].map((p,i)=>`<span class="chip ${!F.cu[k]&&same(F.sel[k],p)?'on':''}" style="--c:${p.c}" onclick="pick('${k}',${i})">${esc(p.l)}${DEF.presets[k].some(d=>same(d,p))?'':`<b class="cx" onclick="event.stopPropagation();delPreset('${k}',${i})">×</b>`}</span>`).join('')+`<span class="chip ${F.cu[k]?'on':''}" onclick="cust('${k}')">＋ Своє</span>`}
+${Object.entries(KINDS).map(([k,n])=>`<label>${n}</label><div class="chips" id="ch_${k}"></div>${cuBox(k)}`).join('')}
+${t?'':`<label>Опис (необов'язково)</label><textarea id="f_ds" rows="3" placeholder="Що саме треба зробити, посилання, нотатки…"></textarea>`}
+<div class="btns">${t?'<button class="dl" onclick="del()">Видалити</button>':''}<button onclick="cancelF()">Скасувати</button><button class="pr" onclick="saveF()">Зберегти</button></div>`;
+Object.keys(KINDS).forEach(k=>chips(k));indUI();
+$('#sheet').scrollTop=0;$('#m').classList.add('show')}
+function chips(k){$('#ch_'+k).innerHTML=S.presets[k].map((p,i)=>`<span class="chip ${!F.cu[k]&&same(F.sel[k],p)?'on':''}" style="--c:${p.c||'#e5e5ea'}" onclick="pick('${k}',${i})">${esc(p.l)}${k!=='type'&&DEF.presets[k].some(d=>same(d,p))?'':`<b class="cx" onclick="event.stopPropagation();delPreset('${k}',${i})">×</b>`}</span>`).join('')+`<span class="chip ${F.cu[k]?'on':''}" onclick="cust('${k}')">＋ Своє</span>`}
 function delPreset(k,i){const p=S.presets[k][i];if(!confirm('Видалити індикатор «'+p.l+'»? У вже створених завданнях він залишиться.'))return;S.presets[k].splice(i,1);if(same(F.sel[k],p)){F.sel[k]=null;F.cu[k]=false;$('#cu_'+k).classList.remove('show')}save();chips(k)}
 function pick(k,i){const p=S.presets[k][i];F.sel[k]=!F.cu[k]&&same(F.sel[k],p)?null:{...p};F.cu[k]=false;$('#cu_'+k).classList.remove('show');chips(k)}
 function cust(k){F.cu[k]=!F.cu[k];$('#cu_'+k).classList.toggle('show',F.cu[k]);if(F.cu[k])cuIn(k);else F.sel[k]=null;chips(k)}
-function cuIn(k){const l=$('#ct_'+k).value.trim();F.sel[k]=l?{l,c:$('#cc_'+k).dataset.v}:null}
+function cuIn(k){const l=$('#ct_'+k).value.trim();let c=$('#cc_'+k).dataset.v;if(k==='ind'){indUI();if(!$('#ck_ind').checked)c=null}F.sel[k]=l?{l,c}:null}
+function indUI(){const b=$('#ck_ind');if(b)$('#cc_ind').style.display=b.checked?'':'none'}
 function closeF(){$('#m').classList.remove('show')}
+function cancelF(){if(F&&F.id)openDetail(F.id);else closeF()}
 function subjSel(){$('#cu_s').classList.toggle('show',$('#f_s').value==='__new')}
 function saveF(){
 const title=$('#f_t').value.trim(),date=$('#f_d').value;
 if(!title||!date){alert('Вкажи назву і дедлайн');return}
-Object.keys(KINDS).forEach(k=>{if(F.cu[k]&&F.sel[k]&&!S.presets[k].some(p=>p.l===F.sel[k].l))S.presets[k].push({...F.sel[k]})});
+Object.keys(KINDS).forEach(k=>{if(F.cu[k]&&F.sel[k]&&!same(F.sel[k],F.orig[k])&&!S.presets[k].some(p=>p.l===F.sel[k].l))S.presets[k].push({...F.sel[k]})});
 let sid=$('#f_s').value;if(sid==='__new'){const n=$('#ns2').value.trim();if(!n){alert('Вкажи назву нового предмета');return}const ex=S.subjects.find(s=>s.name.toLowerCase()===n.toLowerCase());if(ex)sid=ex.id;else{sid='s'+Date.now();S.subjects.push({id:sid,name:n,color:$('#nc2').dataset.v})}}
-const d={title,date,subj:sid,hours:parseFloat($('#f_h').value)||0,type:F.sel.type,diff:F.sel.diff,pts:$('#f_p').value===''?null:parseFloat($('#f_p').value)};
-if(F.id)Object.assign(S.tasks.find(t=>t.id===F.id),d);else S.tasks.push({id:'t'+Date.now(),done:false,...d});
-save();closeF();render()}
-function del(){if(!confirm('Видалити завдання?'))return;S.tasks=S.tasks.filter(t=>t.id!==F.id);save();closeF();render()}
+const d={title,date,subj:sid,hours:parseFloat($('#f_h').value)||0,type:F.sel.type,diff:F.sel.diff,ind:F.sel.ind,pts:$('#f_p').value===''?null:parseFloat($('#f_p').value)};
+if(F.id)Object.assign(S.tasks.find(t=>t.id===F.id),d);else S.tasks.push({id:'t'+Date.now(),done:false,desc:$('#f_ds').value.trim(),...d});
+save();if(F.id){const id=F.id;window._keep=1;render();window._keep=0;openDetail(id)}else{closeF();render()}}
+function del(){if(!confirm('Видалити завдання?'))return;S.tasks=S.tasks.filter(t=>t.id!==F.id);save();closeF();window._keep=1;render();window._keep=0}
+/* details */
+function fdl(s){const d=pd(s),y=d.getFullYear()!==new Date().getFullYear();return ['неділя','понеділок','вівторок','середа','четвер','пʼятниця','субота'][d.getDay()]+', '+d.getDate()+' '+['січня','лютого','березня','квітня','травня','червня','липня','серпня','вересня','жовтня','листопада','грудня'][d.getMonth()]+(y?' '+d.getFullYear():'')}
+const indH=p=>p.c?`<span class="pill" style="--c:${p.c}">${esc(p.l)}</span>`:esc(p.l);
+function openDetail(id){
+const t=S.tasks.find(x=>x.id===id);if(!t)return;
+const kv=(a,b)=>`<div class="kv"><span class="k">${a}</span><span class="v">${b}</span></div>`;
+const sb=S.subjects.find(s=>s.id===t.subj),od=!t.done&&t.date<today();
+const ks=Object.entries(KINDS).filter(([k])=>t[k]).map(([k,n])=>kv(n,indH(t[k]))).join('');
+$('#sheet').innerHTML=`<b class="dtl">${esc(t.title)}</b>
+<div class="card" style="margin:14px 0 4px">${sb?kv('Предмет',`<span style="color:${sb.color}">${esc(sb.name)}</span>`):''}${kv('Дедлайн',`<span style="color:${od?'#ff453a':'var(--or)'}">${fdl(t.date)}</span>`)}${kv('Години',(t.hours||0)+' год')}${t.pts!=null&&t.pts!==''?kv('Бали',t.pts):''}${ks}${t.done?kv('Статус','Виконано ✓'):''}</div>
+<label>Опис</label><textarea id="d_ds" placeholder="Додай опис завдання…" oninput="descIn('${id}',this)">${esc(t.desc||'')}</textarea>
+<div class="btns"><button onclick="closeF()">Закрити</button><button class="pr" onclick="openForm('${id}')">Редагувати</button></div>`;
+$('#sheet').scrollTop=0;$('#m').classList.add('show');autoH($('#d_ds'))}
+function descIn(id,el){const t=S.tasks.find(x=>x.id===id);if(t){t.desc=el.value;save()}autoH(el)}
+function autoH(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight+2,innerHeight*.4)+'px'}
 $('#m').addEventListener('click',e=>{if(e.target.id==='m')closeF()});
 
 const CP={id:null,h:0,s:1,v:1,hex:'#ff0000'};
